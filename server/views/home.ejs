@@ -1,0 +1,144 @@
+
+<%- include("partials/header"); -%>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+
+
+
+<script type="module" src="editor.js"></script>
+    <h1>Hackathon:</h1>
+    <br>
+    
+    <div class="row">
+      <div class="col-md-6 video-div">
+      <div class="row">
+        <div class="col">
+
+            <video class="vid-zoom" id="myVideo"  controls>
+        <source src="video.mp4" type="video/mp4">
+      </video>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <br>
+              </div>
+            </div>
+          <div class="row" >
+              <!-- <div class="col-sm-2">
+                <button class="btn btn-primary" type="button" name="button">Original</button>
+                </div> -->
+                <div class="col-sm-8"></div>
+
+                <div class="col-sm-2">
+                  <button class="btn btn-primary def" type="button" name="button" title="Download the summary as PDF">Download</button>
+                  </div>
+                  <div class="col-sm-2">
+                    <button class="btn btn-primary def" type="button" name="button" title="Save and submit your edit on the summary">Save</button>
+                    </div>
+            </div>
+
+          </div>
+        <div class="col-md-5">
+
+          <div class="well text-editor scrollbar-primary">
+
+
+        <div class="flipped" id="editorjs"></div>
+
+      </div>
+      </div>
+      <div class="col-md-1">
+        <button onclick="Upvote()" id="upvote" class="btn btn-default btn-block white" title="Upvote this version">
+          <svg aria-hidden="true"  width="36" height="36" viewBox="0 0 36 36"><path d="M2 26h32L18 10 2 26z"></path></svg>
+
+        </button><div id="--stacks-s-tooltip-atv0ueut" class="s-popover s-popover__tooltip pe-none" aria-hidden="true" role="tooltip">
+        </div>
+        <div id="vote" class="votes" data-value="14">0</div>
+        <button onclick="Downvote()" id="downvote" class="btn btn-default btn-block white" title="Downvote this version"><svg aria-hidden="true" class="m0 svg-icon iconArrowDownLg" width="36" height="36" viewBox="0 0 36 36"><path d="M2 10h32L18 26 2 10z"></path></svg></button><div id="--stacks-s-tooltip-u6r6hej4" class="s-popover s-popover__tooltip pe-none" aria-hidden="true" role="tooltip"><div class="s-popover--arrow"></div></div>
+
+
+
+        </div>
+      </div>
+
+
+
+
+      <script>
+      function setCurTime(time) {
+        var vid = document.getElementById("myVideo");
+        vid.currentTime=time;
+      }
+      var val = document.getElementById("vote");
+      const prev = Number(val.innerHTML);
+      function Upvote(){
+
+        var change= document.getElementById("upvote");
+        var change2 =document.getElementById("downvote");
+        if(!change.classList.contains("selected")){
+        change.classList.add("selected");
+        change2.classList.remove("selected");
+
+        val.innerHTML = prev+1;
+        if(prev+1 > 0){
+        val.classList.add("positive");
+        val.classList.remove("negative");
+      }
+      }
+    }
+
+    function Downvote(){
+      var change= document.getElementById("downvote");
+      var change2 =document.getElementById("upvote");
+      if(!change.classList.contains("selected")){
+      change.classList.add("selected");
+      change2.classList.remove("selected");
+
+      val.innerHTML = prev-1;
+      if(prev-1 < 0){
+        val.classList.add("negative");
+        val.classList.remove("positive");
+      }
+    }
+
+    }
+
+          var editor = new EditorJS({
+          tools: {
+            inlineCode: {
+              class: InlineCode,
+              shortcut: 'CMD+SHIFT+M',
+            },
+            header: {
+              class: Header,
+              shortcut: 'CMD+SHIFT+H',
+            },
+            list: {
+            class: List,
+            inlineToolbar: true,
+            },
+            image: {
+              class: ImageTool,
+              config: {
+                endpoints: {
+                  byFile: 'http://localhost:3000/uploadFile', // Your backend file uploader endpoint
+                  byUrl: 'http://localhost:3000/fetchUrl', // Your endpoint that provides uploading by Url
+                }
+              }
+            }
+          },
+            data:{ blocks :[{
+            type: "paragraph",
+            data:{
+              text: "<%=trascript%>"
+            }
+          }] }});
+
+      </script>
+
+
+<%- include("partials/footer"); -%>

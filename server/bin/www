@@ -1,0 +1,134 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('server:server');
+var http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+//Make Zoom API call
+function zoomer(){
+
+  const rp = require('request-promise');
+
+  //Connection request uri
+  const connect_uri = 'https://api.zoom.us/v2/users';
+
+  //List of recordings uri
+  const uri2 = 'https://api.zoom.us/v2/users/BeOH5DDDReyRgPqyNAWiWA/recordings'
+
+  const options = {
+      uri: connect_uri,
+        qs: {
+          status: 'active' // -> uri + '?status=active'
+        },
+
+      auth: {
+        //JWT token
+        'bearer': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6IjN5Z21SODZaUUd1X0FQcnc2NUhaS2ciLCJleHAiOjE2MDAwOTUzODEsImlhdCI6MTU5OTQ5MDU4MX0.zuYsOScY9HyXjsnsOtWYXVtmnVh1Mu891awljvZ3U-g'
+  	    },
+      headers: {
+        'User-Agent': 'Zoom-Jwt-Request',
+        'content-type': 'application/json'
+      },
+        json: true // Automatically parses the JSON string in the response
+  };
+
+rp(options)
+    .then(function (response) {
+
+      //logic for your response
+      console.log('User has', response);
+
+    })
+    .catch(function (err) {
+
+        // API call failed...
+        console.log('API call failed, reason ', err);
+
+});
+
+}
